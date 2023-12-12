@@ -1,0 +1,62 @@
+# Chessboard Diagram Assignment Report
+
+[Replace the square-bracketed text with your own text. *Leave everything else unchanged.* 
+Note, the reports are parsed to check word limits, etc. Changing the format may cause 
+the parsing to fail.]
+
+## Feature Extraction (Max 200 Words)
+
+My process of extracting features from the initial image data starts with image preprocessing. 
+Specifically, I’ve used Gaussian Filtering on each image to smoothen and reduce noise. 
+Following this, the pre-processed images are shaped into a 1D array, essentially flattening the 2D image into a sequence of pixel values. 
+
+We know that each square of the chessboard is represented by its pixel intensity values in a feature vector 
+so these values will form the elements of the feature vector. The dataset that will be used for training and 
+testing is comprised of these feature vectors.
+
+The extracted feature vector retains information about the pixel intensities after preprocessing. 
+The Gaussian filter smooths the image and captures general patterns, which can help in recognizing 
+the pieces on the chessboard.
+
+## Square Classifier (Max 200 Words)
+
+My classifier uses a non-parametric-based approach, i.e., k-NN (k nearest neighbours) which 
+considers the k nearest neighbouring classes (equivalent to the first k predicted labels for the unclassified sample). 
+
+The classifier looks at the Euclidean distances between the unclassified sample and all samples 
+in the training set. It selects the k nearest neighbours based on these distances.
+
+The specific k value I’ve used in my code is k = 3 to balance between overfitting and smoothing out local variations. 
+Once the nearest k neighbours are identified, the classifier counts the occurrences of each 
+class label among these neighbours. The class label that occurs most frequently among the 
+k neighbours is assigned to the unclassified sample.
+
+
+## Full-board Classification (Max 200 Words)
+
+The approach I’ve taken for classifying the full board makes uses of 2 strategies:
+- There can only be 1 white king and 1 black king on the board. But, 
+  if there are 2 of either or both, the duplicate should be classified as a queen of the same colour.
+- Pawns can only be placed between the 2nd and 2nd last row of the chess board. 
+  If a pawn is found to be on the first or the last row of the chess board, 
+  reclassify it with the same classifier until a label other than pawn is predicted for that square.
+
+
+## Performance
+
+My percentage correctness scores (to 1 decimal place) for the development data are as follows.
+
+High quality data:
+
+- Percentage Squares Correct: 98.8%
+- Percentage Boards Correct: 98.8%
+
+Noisy data:
+
+- Percentage Squares Correct: 94.7%
+- Percentage Boards Correct: 94.7%
+
+## Other information (Optional, Max 100 words)
+
+[Optional: highlight any significant aspects of your system that are NOT covered in the
+sections above]
