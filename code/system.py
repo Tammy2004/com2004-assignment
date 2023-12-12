@@ -34,10 +34,16 @@ def reclassify(train: np.ndarray, train_labels: np.ndarray, test: np.ndarray,lab
                 label_counts[l] = nearest_labels.tolist().count(l)
         print(label_counts)
         closest_label = max(label_counts, key=label_counts.get)
-        # label_counts_without_max = label_counts.copy()
-        # label_counts_without_max.pop(closest_label)
-        # closest_label = max(label_counts_without_max, key=label_counts_without_max.get) #giving me an error because the nearest k classes are same as wrong label and removing that gives an empty dictionary
-        # # Find the second maximum label from the modified label_counts
+
+        label_counts_without_max = label_counts.copy()
+        label_counts_without_max.pop(closest_label)
+        if label_counts_without_max == {}: #if the dictionary is empty, then there is no other label to use
+            closest_label = '.'
+        else:
+            closest_label = max(label_counts_without_max, key=label_counts_without_max.get) #giving me an error because the nearest k classes are same as wrong label and removing that gives an empty dictionary
+
+        # Find the second maximum label from the modified label_counts
+
         correct_label = closest_label
         k+=2 #increasing k by 2 to use more distances in the computation in the hopes of getting another label
     return correct_label
@@ -60,9 +66,12 @@ def classify(train: np.ndarray, train_labels: np.ndarray, test: np.ndarray) -> L
     """
     output_labels = []
     for test_vector in test:
+        #source: https://stackoverflow.com/questions/1401712/how-can-the-euclidean-distance-be-calculated-with-numpy
+        #used quoted answer as a reference for the function used to calculate euclidean distance
         distances = np.linalg.norm(train - test_vector, axis=1)
-        nearest_k = np.argsort(distances)[:3]
+        nearest_k = np.argsort(distances)[:3] #[0,1,2]
         nearest_labels = train_labels[nearest_k]
+
         label_counts = {}
         for label in nearest_labels:
             if label not in label_counts:
@@ -213,7 +222,7 @@ def classify_boards(fvectors_test: np.ndarray, model: dict) -> List[str]:
         model_list.append(labels_list[i:i + 64])
 
         #go through each board in model_list and implement these:
-
+    print(len(model_list))
     # print(model_list)
     for board in range(len(model_list)):
         k_count = 0
@@ -226,7 +235,7 @@ def classify_boards(fvectors_test: np.ndarray, model: dict) -> List[str]:
                 model_list[board][piece] = reclassify(fvectors_train, labels_train, fvectors_test,model_list[board][piece])    
                 # print(model_list[board][piece])
             
-        for piece in range(-1,-9,-1):
+        for piece in range(56,64):
             if model_list[board][piece] == "p" or model_list[board][piece] == "P":
                 model_list[board][piece] = reclassify(fvectors_train, labels_train, fvectors_test,model_list[board][piece])
 
@@ -247,8 +256,8 @@ def classify_boards(fvectors_test: np.ndarray, model: dict) -> List[str]:
                         model_list[board][piece] = "k"
                     else:
                         model_list[board][piece] = "K"
+    output_board = []
+    for board in model_list:
+        output_board += board
 
-    # print(model_list)
-
-
-    return model_list
+    return output_board

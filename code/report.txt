@@ -6,6 +6,7 @@ the parsing to fail.]
 
 ## Feature Extraction (Max 200 Words)
 
+I used PCA for dimensionality reduction of the extracted feature vectors so as to reduce the dimensionality while preserving as much essential information as possible. 
 My process of extracting features from the initial image data starts with image preprocessing. 
 Specifically, I’ve used Gaussian Filtering on each image to smoothen and reduce noise. 
 Following this, the pre-processed images are shaped into a 1D array, essentially flattening the 2D image into a sequence of pixel values. 
@@ -40,7 +41,8 @@ The approach I’ve taken for classifying the full board makes uses of 2 strateg
 - Pawns can only be placed between the 2nd and 2nd last row of the chess board. 
   If a pawn is found to be on the first or the last row of the chess board, 
   reclassify it with the same classifier until a label other than pawn is predicted for that square.
-
+Both of these approaches aim to prevent redundancy and make use of basic chess rules to account 
+for situations that wouldn't normally happen.
 
 ## Performance
 
@@ -49,12 +51,12 @@ My percentage correctness scores (to 1 decimal place) for the development data a
 High quality data:
 
 - Percentage Squares Correct: 98.8%
-- Percentage Boards Correct: 98.8%
+- Percentage Boards Correct: 96.7%
 
 Noisy data:
 
 - Percentage Squares Correct: 94.7%
-- Percentage Boards Correct: 94.7%
+- Percentage Boards Correct: 93.9%
 
 ## Other information (Optional, Max 100 words)
 
